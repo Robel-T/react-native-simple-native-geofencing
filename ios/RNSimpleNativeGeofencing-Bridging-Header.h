@@ -1,5 +1,5 @@
 
 // CounterApp-Bridging-Header.h
 
-#import <React/RCTBridgeModule.h>
-#import <React/RCTEventEmitter.h>
+#import <RCTBridgeModule.h>
+#import <RCTEventEmitter.h>

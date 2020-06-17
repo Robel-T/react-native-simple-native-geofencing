@@ -25,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNSimpleNativeGeofencing.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNSimpleNativeGeofencing.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		9C29FED124954A3C00A4F0B1 /* RCTEventEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTEventEmitter.h; sourceTree = "<group>"; };
+		9CD11AAC24954C9B003DE8D3 /* RCTBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTBridge.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNSimpleNativeGeofencing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNSimpleNativeGeofencing.m; sourceTree = "<group>"; };
 		F588AA2F21EB9480000CC39F /* RNSimpleNativeGeofencing-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNSimpleNativeGeofencing-Bridging-Header.h"; sourceTree = "<group>"; };
 		F588AA3021EB9480000CC39F /* RNSimpleNativeGeofencing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNSimpleNativeGeofencing.swift; sourceTree = "<group>"; };
@@ -52,6 +54,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				9CD11AAC24954C9B003DE8D3 /* RCTBridge.h */,
+				9C29FED124954A3C00A4F0B1 /* RCTEventEmitter.h */,
 				F588AA3021EB9480000CC39F /* RNSimpleNativeGeofencing.swift */,
 				B3E7B5891CC2AC0600A0062D /* RNSimpleNativeGeofencing.m */,
 				F588AA2F21EB9480000CC39F /* RNSimpleNativeGeofencing-Bridging-Header.h */,
@@ -99,6 +103,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;

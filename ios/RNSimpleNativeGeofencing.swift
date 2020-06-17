@@ -159,8 +159,8 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
     }
     
     
-    @objc(addGeofences:duration:failCallback:)
-    func addGeofences(geofencesArray:NSArray, duration:Int, failCallback: @escaping RCTResponseSenderBlock) -> Void {
+    @objc(addGeofences:duration:)
+    func addGeofences(geofencesArray:NSArray, duration:Int) -> Void {
         
         DispatchQueue.main.async {
             
@@ -194,11 +194,11 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
                 
                 if !(self.locationAuthorized && self.notificationAuthorized) {
                     
-                    let resultsDict = [
+                    _ = [
                         "success" : false
                     ];
                     
-                    failCallback([NSNull() ,resultsDict])
+                  //  failCallback([NSNull() ,resultsDict])
                 }
                 
             })

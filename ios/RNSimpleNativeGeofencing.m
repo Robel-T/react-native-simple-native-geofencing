@@ -1,6 +1,6 @@
 
 
-#import <React/RCTBridgeModule.h>
+#import <RCTBridgeModule.h>
 
 
 @interface RCT_EXTERN_MODULE(RNSimpleNativeGeofencing, NSObject)
@@ -12,8 +12,7 @@ RCT_EXTERN_METHOD(addGeofence:  (NSDictionary *)geofence
                   duration:(NSInteger *)duration)
 
 RCT_EXTERN_METHOD(addGeofences: (NSArray *)geofencesArray
-                  duration:(NSInteger *)duration
-                  failCallback:(RCTResponseSenderBlock *)failCallback)
+                  duration:(NSInteger *)duration)
 
 RCT_EXTERN_METHOD(updateGeofences:  (NSArray *)geofencesArray
                   duration:(NSInteger *)duration)
