@@ -132,7 +132,6 @@ public class GeofenceTransitionsBroadcastReceiver extends BroadcastReceiver {
                 if (intent.getBooleanExtra("notifyExit", false)) {
 
                     for (Geofence geofence : triggeringGeofences) {
-                        Log.i(TAG, "Le geofence quitte est: " + geofence.getRequestId());
 
                         if (!geofence.getRequestId().equals("monitor")) {
                             LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this.mContext);
