@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -16,6 +17,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.facebook.react.HeadlessJsTaskService;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactMethod;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import java.util.ArrayList;
@@ -29,6 +33,8 @@ public class GeofenceTransitionsBroadcastReceiver extends BroadcastReceiver {
     private NotificationChannel channel;
     private static final String PREFERENCE_LAST_NOTIF_ID = "PREFERENCE_LAST_NOTIF_ID";
     private Context mContext;
+    private boolean send= false;
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -58,16 +64,14 @@ public class GeofenceTransitionsBroadcastReceiver extends BroadcastReceiver {
             );
 
             //Check Monitor
-            if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
+            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
                 for (Geofence geofence : triggeringGeofences) {
-                    if(geofence.getRequestId().equals("monitor")){
+                    if (geofence.getRequestId().equals("monitor")) {
                         Log.i(TAG, "Outside Monitor");
 
                         //SEND CALLBACK
                         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this.mContext);
-                        Intent customEvent= new Intent("outOfMonitorGeofence");
-                        customEvent.putExtra("startTime", intent.getLongExtra("startTime", System.currentTimeMillis()));
-                        customEvent.putExtra("duration", intent.getIntExtra("duration", 3000));
+                        Intent customEvent = new Intent("outOfMonitorGeofence");
                         localBroadcastManager.sendBroadcast(customEvent);
 
                     }
@@ -77,19 +81,32 @@ public class GeofenceTransitionsBroadcastReceiver extends BroadcastReceiver {
             //Get (only) last triggered geofence which is not monitor
             ArrayList<Geofence> geofencesWithoutMonitor = new ArrayList<>();
             for (Geofence geofence : triggeringGeofences) {
-                if(!geofence.getRequestId().equals("monitor")){
+                if (!geofence.getRequestId().equals("monitor")) {
                     geofencesWithoutMonitor.add(geofence);
                 }
             }
 
             //Check entering a Geofence
-            if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER && geofencesWithoutMonitor.size() > 0){
-                if(intent.getBooleanExtra("notifyEnter", false)){
+            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER && geofencesWithoutMonitor.size() > 0) {
+                //SEND CALLBACK
+                for (Geofence geofence : triggeringGeofences) {
+                    Log.i(TAG, "Le geofence entré est: " + geofence.getRequestId());
+
+                    if (!geofence.getRequestId().equals("monitor")) {
+                        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this.mContext);
+                        Intent customEvent = new Intent("EnterZone");
+                        localBroadcastManager.sendBroadcast(customEvent);
+                    }
+                }
+
+                if (intent.getBooleanExtra("notifyEnter", false)) {
+
                     Geofence geofence = geofencesWithoutMonitor.get(0);
                     String title = intent.getStringExtra("notifyEnterStringTitle");
                     String description = intent.getStringExtra("notifyEnterStringDescription");
                     ArrayList<String> geofenceValues = intent.getStringArrayListExtra("geofenceValues");
                     ArrayList<String> geofenceKeys = intent.getStringArrayListExtra("geofenceKeys");
+
                     int index = geofenceKeys.indexOf(geofence.getRequestId());
                     try {
                         description = description.replace("[value]", geofenceValues.get(index));
@@ -105,14 +122,27 @@ public class GeofenceTransitionsBroadcastReceiver extends BroadcastReceiver {
                             intent.getStringExtra("notifyChannelStringDescription"),
                             intent
                     );
-                }else{
+                } else {
                     clearNotification();
                 }
             }
             //Check exiting a Geofence
-            if(geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT && geofencesWithoutMonitor.size() > 0){
+            if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT && geofencesWithoutMonitor.size() > 0) {
 
-                if (intent.getBooleanExtra("notifyExit", false)){
+                if (intent.getBooleanExtra("notifyExit", false)) {
+
+                    for (Geofence geofence : triggeringGeofences) {
+                        Log.i(TAG, "Le geofence quitte est: " + geofence.getRequestId());
+
+                        if (!geofence.getRequestId().equals("monitor")) {
+                            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this.mContext);
+                            Intent customEvent = new Intent("ExitZone");
+                            localBroadcastManager.sendBroadcast(customEvent);
+                        }
+                    }
+
+
+
                     Geofence geofence = geofencesWithoutMonitor.get(0);
                     String title = intent.getStringExtra("notifyExitStringTitle");
                     String description = intent.getStringExtra("notifyExitStringDescription");
@@ -133,7 +163,7 @@ public class GeofenceTransitionsBroadcastReceiver extends BroadcastReceiver {
                             intent.getStringExtra("notifyChannelStringDescription"),
                             intent
                     );
-                }else{
+                } else {
                     clearNotification();
                 }
 
@@ -154,6 +184,7 @@ public class GeofenceTransitionsBroadcastReceiver extends BroadcastReceiver {
             */
         }
     }
+
 
     /*
         Help functions for logging
