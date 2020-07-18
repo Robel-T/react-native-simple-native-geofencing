@@ -545,16 +545,12 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if region is CLCircularRegion {
             self.handleEvent(region:region, didEnter: true)
-
-
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         if region is CLCircularRegion {
-
             self.handleEvent(region:region, didEnter: false)
-
         }
     }
 //
@@ -586,7 +582,6 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
             self.handleEvent(region: region, didEnter: true)
         case .outside:
             print("Outside");
-            self.handleEvent(region: region, didEnter: false)
         case .unknown:
             print("Unknown");
         default:
