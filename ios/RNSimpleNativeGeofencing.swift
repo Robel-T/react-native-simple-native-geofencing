@@ -424,42 +424,39 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
         }else{
             var didEnterBody: String?
             var didExitBody: String?
+            var identifier = ""
             
             let content = UNMutableNotificationContent()
             content.sound = UNNotificationSound.default
             
-            
-            if self.didEnterBody.contains("[value]") {
-                
-                let body : [String:AnyObject] = [
-                    "leftZone": "false" as AnyObject
-                ]
-                
-                if let value = self.valueDic[region.identifier] {
-                    self.sendEvent(withName: "enterExitZone", body: body)
-                    didEnterBody = self.didEnterBody.replacingOccurrences(of: "[value]", with: value, options: NSString.CompareOptions.literal, range:nil)
-
-                }
-            }
-            
-            if self.didExitBody.contains("[value]") {
-                let body : [String:AnyObject] = [
-                    "leftZone": "true" as AnyObject
-                ]
-                
-                if let value = self.valueDic[region.identifier] {
-                    self.sendEvent(withName: "enterExitZone", body: body)
-                    didExitBody = self.didExitBody.replacingOccurrences(of: "[value]", with: value, options: NSString.CompareOptions.literal, range:nil)
-                }
-            }
-            
-            var identifier = ""
-            
             if didEnter {
+                if self.didEnterBody.contains("[value]") {
+                    
+                    let body : [String:AnyObject] = [
+                        "leftZone": "false" as AnyObject
+                    ]
+                    
+                    if let value = self.valueDic[region.identifier] {
+                        self.sendEvent(withName: "enterExitZone", body: body)
+                        didEnterBody = self.didEnterBody.replacingOccurrences(of: "[value]", with: value, options: NSString.CompareOptions.literal, range:nil)
+
+                    }
+                }
                 content.title = self.didEnterTitle
                 content.body = didEnterBody!
                 identifier = "enter: \(region.identifier)"
             }else{
+                
+                if self.didExitBody.contains("[value]") {
+                    let body : [String:AnyObject] = [
+                        "leftZone": "true" as AnyObject
+                    ]
+                    
+                    if let value = self.valueDic[region.identifier] {
+                        self.sendEvent(withName: "enterExitZone", body: body)
+                        didExitBody = self.didExitBody.replacingOccurrences(of: "[value]", with: value, options: NSString.CompareOptions.literal, range:nil)
+                    }
+                }
                 content.title = self.didExitTitle
                 content.body = didExitBody!
                 identifier = "exit: \(region.identifier)"
@@ -511,7 +508,7 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
             content.body = self.startTrackingBody
         }else{
             content.title = self.stopTrackingTitle
-            content.body = self.startTrackingBody
+            content.body = self.stopTrackingBody
         }
         
         
@@ -545,15 +542,19 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if region is CLCircularRegion {
             self.handleEvent(region:region, didEnter: true)
+
+
         }
     }
 
     func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         if region is CLCircularRegion {
+            print("Outside2");
+
             self.handleEvent(region:region, didEnter: false)
         }
     }
-//
+
 //    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
 //        if status == .denied {
 //            print("Geofence will not Work, because of missing Authorization")
@@ -563,13 +564,14 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
 //        }
 //    }
 //    func locationManager(_ manager: CLLocationManager, didStartMonitoringFor region: CLRegion) {
-//        print("BM didStartMonitoringForRegion")
+//       // print("BM didStartMonitoringForRegion")
 //        manager.requestState(for: region) // should locationManager be manager?
 //    }
 //
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations region: CLRegion) {
-        manager.requestState(for: region)
-    }
+     func locationManager(_ manager: CLLocationManager, didUpdateLocations region: CLRegion) {
+           manager.requestState(for: region)
+       }
+
 
     func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
 //        if state == .inside {
@@ -579,9 +581,14 @@ class RNSimpleNativeGeofencing: RCTEventEmitter, CLLocationManagerDelegate, UNUs
         switch state {
         case .inside:
             print("Inside \(region.identifier)");
-            self.handleEvent(region: region, didEnter: true)
+            if region is CLCircularRegion {
+                        self.handleEvent(region:region, didEnter: true)
+            
+            
+                    }
         case .outside:
             print("Outside");
+            
         case .unknown:
             print("Unknown");
         default:
