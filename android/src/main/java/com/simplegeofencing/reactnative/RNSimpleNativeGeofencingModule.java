@@ -20,6 +20,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+
 import com.facebook.react.HeadlessJsTaskService;
 import com.facebook.react.bridge.CatalystInstance;
 import com.facebook.react.bridge.Promise;
@@ -449,20 +450,35 @@ public class RNSimpleNativeGeofencingModule extends ReactContextBaseJavaModule {
         Log.i(TAG, "In Zone");
         Intent serviceIntent = new Intent(context, EnterZoneService.class);
         serviceIntent.putExtra("duration", 50000000);
-        context.startService(serviceIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          context.startForegroundService(serviceIntent);
+        }
+        else{
+          context.startService(serviceIntent);
+        }
         HeadlessJsTaskService.acquireWakeLockNow(context);
       }
       else if (intent.getAction().equals("outOfMonitorGeofence")){
           Log.i(TAG, "Out monitor");
         Intent serviceIntent = new Intent(context, MonitorUpdateService.class);
         serviceIntent.putExtra("duration", 50000000);
-        context.startService(serviceIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          context.startForegroundService(serviceIntent);
+        }
+        else{
+          context.startService(serviceIntent);
+        }
         HeadlessJsTaskService.acquireWakeLockNow(context);
       }
       else{
         Intent serviceIntent = new Intent(context,ExitZoneService.class);
         serviceIntent.putExtra("duration", 50000000);
-        context.startService(serviceIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          context.startForegroundService(serviceIntent);
+        }
+        else{
+          context.startService(serviceIntent);
+        }
         HeadlessJsTaskService.acquireWakeLockNow(context);
       }
       //reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
